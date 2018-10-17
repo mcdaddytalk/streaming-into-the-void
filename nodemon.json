@@ -1,0 +1,3 @@
+{
+    "ignore": ["pouch/*", "log.txt", "config.json", "data/*", "client/*"]
+}

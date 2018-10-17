@@ -1,13 +1,18 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+/data
+/pouch
+config.json
+config.js
+
 # dependencies
-/node_modules
+node_modules
 
 # testing
-/coverage
+coverage
 
 # production
-/build
+build
 
 # misc
 .DS_Store

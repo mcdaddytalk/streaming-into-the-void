@@ -1,25 +1,25 @@
 {
-  "name": "streaming-into-the-void",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-scripts": "2.0.4"
-  },
+  "name": "screaming-into-the-void",
+  "version": "1.0.0",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "client": "cd client && npm start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "dependencies": {
+    "add-cors-to-couchdb": "0.0.6",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "express-pouchdb": "^4.1.0",
+    "node-cron": "^2.0.3",
+    "pouchdb": "^7.0.0",
+    "pouchdb-erase": "^1.0.2",
+    "pouchdb-upsert": "^2.2.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
+    "shortid": "^2.2.13"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "devDependencies": {
+    "concurrently": "^3.5.0"
+  }
 }
