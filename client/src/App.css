@@ -5,6 +5,49 @@ html, body {
   font-weight: 500;
 }
 
+a {
+  color: white;
+}
+
+h1 {
+  margin: 0;
+  padding-top: 2rem;
+}
+
 .App {
   text-align: center;
+
+}
+
+.StreamList {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+iframe {
+  flex-grow: 1;
+}
+
+html, body, #root, .App {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.StreamList {
+  height: 75%;
+}
+
+.next {
+  font-family: inherit;
+  background: none;
+  color: inherit;
+  border: none;
+  word-break: break-all;
+  font-size: 16px;
+  width: 1em;
+  padding: 5em;
+  text-align: center;
+  cursor: pointer;
+  flex-grow: 1;
 }

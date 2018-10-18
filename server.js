@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const {PouchDB} = require('./db');
-const Config = require('./config.json');
+const Config = require('./conf.json');
 
 // cron job for fetcher
 let batchNum = 0;
@@ -26,7 +26,10 @@ const schedule = cron.schedule(
 schedule.start();
 
 // add db route
-app.use('/', cors(), require('express-pouchdb')(PouchDB));
+app.use('/', cors(), require('express-pouchdb')(PouchDB, {
+  configPath: './conf.json',
+  inMemoryConfig: true
+}));
 
 // server live
 app.listen(port, () => {

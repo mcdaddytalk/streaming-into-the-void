@@ -13,11 +13,10 @@ const Stream = props => {
   return (
     <iframe
       src={'https://player.twitch.tv/?channel=' + stream.username}
-      frameborder="0"
-      allowfullscreen="true"
+      frameBorder="0"
+      allowFullScreen
+      muted
       scrolling="no"
-      height="378"
-      width="620"
       title={stream.title}
       key={stream._id}
     />

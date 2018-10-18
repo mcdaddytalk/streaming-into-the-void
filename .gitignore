@@ -3,6 +3,7 @@
 pouch
 config.json
 nodemon.json
+now.json
 log.txt
 
 # dependencies

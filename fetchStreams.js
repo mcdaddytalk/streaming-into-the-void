@@ -4,7 +4,7 @@ const request = require('request-promise-native');
 const {Voids} = require('./db');
 
 // path consts
-const CONFIG_PATH = './config.json';
+const CONFIG_PATH = './conf.json';
 let Config = require(CONFIG_PATH);
 
 // update the config file with a new cursor value (for the next run of this script)
@@ -54,7 +54,6 @@ const fetchStreams = async (cursor, token) => {
     },
     json: true
   }
-  console.log(`uri: ${options.uri}\ncursor:${cursor}`);
   // fetch and return data
   try {
     const response = await request(options);
