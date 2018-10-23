@@ -1,5 +1,9 @@
-const PouchDB = require('pouchdb').defaults({
-  prefix: './pouch/',
+const tmpPath = process.env.NODE_ENV === 'production'
+  ? '/tmp'
+  : __dirname + '/tmp';
+
+const PouchDB = require('pouchdb-node').defaults({
+  prefix: tmpPath + '/pouch/',
   auto_compaction: true
 });
 

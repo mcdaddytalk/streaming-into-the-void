@@ -51,3 +51,10 @@ html, body, #root, .App {
   cursor: pointer;
   flex-grow: 1;
 }
+
+.credit {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 1rem;
+}

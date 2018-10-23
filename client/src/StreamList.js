@@ -3,8 +3,13 @@ import Stream from './Stream';
 import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 
+// Pouch DB setup
 PouchDB.plugin(PouchDBFind);
-const Voids = new PouchDB('https://void.kitay.co/voids');
+const dbURL = process.env.REACT_APP_STAGE === 'dev'
+  ? 'http://localhost:5000/db/voids'
+  : 'https://void.kitay.co/db/voids';  
+
+const Voids = new PouchDB(dbURL);
 
 class StreamList extends React.Component {
   constructor(props) {
@@ -12,6 +17,7 @@ class StreamList extends React.Component {
     this.state = {
       fetching: true,
       streams: [],
+      seen: []
     }
   }
 
@@ -19,25 +25,35 @@ class StreamList extends React.Component {
       return Math.random()*(max-min+1)+min;
   }
 
-  getStreams = () => {
+  getStreams = (count = 2) => {
     try {
-      let queryAtTime = Date.now() - Math.floor(this.randInterval(0, 3) * 60 * 1000);
+      let queryAtTime = Date.now() - Math.floor(this.randInterval(0, 2) * 60 * 1000);
       let query = {
         selector: {
+          _id: {
+            $nin: this.state.seen
+          },
           created_at: {
             $gte: queryAtTime
           }
         },
         sort: ['created_at'],
-        limit: 2
+        limit: count
       };
       Voids.find(query).then((response) => {
-        this.setState({
+        let seen = this.state.seen.slice();
+        seen.push(...response.docs.reduce((ids, doc) => {
+          ids.push(doc._id);
+          return ids;
+        }, []));
+
+         this.setState({
           fetching: false,
-          streams: response.docs
+          streams: response.docs,
+          seen
         });
       });
-      
+      Voids.explain(query).then(console.log)
     } catch(e) {
       console.log(e);
     }
@@ -66,7 +82,7 @@ class StreamList extends React.Component {
         <button className="next" onClick={this.nextOnClick}>
           {this.state.fetching
           ? "searching..."
-          : "next"}
+          : "go deeper"}
         </button>
       </div>
     );

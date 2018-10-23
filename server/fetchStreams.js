@@ -1,24 +1,6 @@
-const fs = require('fs');
 const request = require('request-promise-native');
 
 const {Voids} = require('./db');
-
-// path consts
-const CONFIG_PATH = './conf.json';
-let Config = require(CONFIG_PATH);
-
-// update the config file with a new cursor value (for the next run of this script)
-const updateCursor = async (newCursor) => {
-  // new config object
-  Config = {...Config, cursor: newCursor};
-  let jsonPkg = JSON.stringify(Config);
-
-  // write the new config
-  fs.writeFile(CONFIG_PATH, jsonPkg, (err) => {
-    if(err) console.error('==> Could not update config (new cursor)', err);
-    console.log('==> Updated cursor', newCursor);
-  });
-}
 
 const addVoid = async (stream) => {
   const _id = stream.id // a particular stream: a user ID and a created at
@@ -78,9 +60,7 @@ const filterStreams = async (streams) => {
 }
 
 // grab many streams in a batch of up to 120 calls.
-const fetchBatch = async (token) => {
-  // starter cursor from our config file. we will update this later.
-  let cursor = Config.cursor;
+const fetchBatch = async (token, cursor) => {
   let batchSize = 120;
 
   let stats = {
@@ -117,9 +97,6 @@ const fetchBatch = async (token) => {
   } finally {
     console.log(`==> Finished batch.\n${stats.voids} voids\n${stats.calls} calls`);
 
-    // update the cursor at the end of the loop.
-    updateCursor(cursor);
-
     // trigger a re-index
     await Voids.find({
       selector: {
@@ -131,7 +108,7 @@ const fetchBatch = async (token) => {
       limit: 1
     });
 
-    return stats;
+    return {...stats, cursor};
   }
 }
 
