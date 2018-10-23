@@ -2,6 +2,7 @@
 
 tmp
 config.json
+now.json
 
 # dependencies
 node_modules

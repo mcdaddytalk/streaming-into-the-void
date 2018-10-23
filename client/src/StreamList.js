@@ -7,7 +7,7 @@ import PouchDBFind from 'pouchdb-find';
 PouchDB.plugin(PouchDBFind);
 const dbURL = process.env.REACT_APP_STAGE === 'dev'
   ? 'http://localhost:5000/db/voids'
-  : 'https://void.kitay.co/db/voids';  
+  : 'https://api.void.kitay.co/voids';  
 
 const Voids = new PouchDB(dbURL);
 
