@@ -1,16 +1,13 @@
-const tmpPath = process.env.NODE_ENV === 'production'
-  ? '/tmp'
-  : __dirname + '/tmp';
-
 const PouchDB = require('pouchdb-node').defaults({
-  prefix: tmpPath + '/pouch/',
-  auto_compaction: true
+  auto_compaction: true,
+  adapter: 'memory'
 });
 
 // add plugins
 PouchDB.plugin(require('pouchdb-erase'));
 PouchDB.plugin(require('pouchdb-find'));
 PouchDB.plugin(require('pouchdb-upsert'));
+PouchDB.plugin(require('pouchdb-adapter-memory'));
 
 const Voids = new PouchDB('voids');
 

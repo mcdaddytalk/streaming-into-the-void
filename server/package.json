@@ -2,11 +2,9 @@
   "name": "streaming-into-the-void",
   "version": "1.0.0",
   "scripts": {
-    "client:dev": "cd ../client && REACT_APP_STAGE=dev npm start",
-    "server:dev": "nodemon index.js",
-    "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
-    "server:prod": "NODE_ENV=prod node index.js",
-    "start": "npm run server:prod"
+    "dev": "nodemon index.js",
+    "pre": "mkdir -p /tmp && mkdir -p /tmp/pouch && touch /tmp/log.txt",
+    "start": "npm run pre && NODE_ENV=production node index.js"
   },
   "dependencies": {
     "add-cors-to-couchdb": "0.0.6",
@@ -22,8 +20,5 @@
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "shortid": "^2.2.13"
-  },
-  "devDependencies": {
-    "concurrently": "^3.5.0"
   }
 }
