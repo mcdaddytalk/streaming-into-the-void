@@ -1,10 +1,9 @@
 {
-  "name": "streaming-into-the-void",
+  "name": "sitv-server",
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon index.js",
-    "pre": "mkdir -p /tmp && mkdir -p /tmp/pouch && touch /tmp/log.txt",
-    "start": "npm run pre && NODE_ENV=production node index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "add-cors-to-couchdb": "0.0.6",
