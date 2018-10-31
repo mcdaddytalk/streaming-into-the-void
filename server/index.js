@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const fetchStreams = require('./fetchStreams');
+const pruneStreams = require('./pruneStreams');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,6 +18,13 @@ let cursor = null;
 
 setInterval(async () => {
   batchNum++;
+
+  // every 5th batch, clear out old streams.
+  if (batchNum % 5 === 0) {
+    pruneStreams.prune();
+  }
+
+  // load more streams
   let token =
     batchNum % 2
       ? Config.token.access_token
@@ -24,7 +32,7 @@ setInterval(async () => {
   console.log('Scheduled batch', batchNum, token);
   let result = await fetchStreams.fetchBatch(token, cursor);
   cursor = result.cursor;
-}, 60000);
+}, 1000 * 60);
 
 // add db route
 app.use(
