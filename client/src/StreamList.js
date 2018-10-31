@@ -22,8 +22,7 @@ class StreamList extends React.Component {
     this.state = {
       fetching: true,
       fetchSecs: 0,
-      streams: [],
-      seen: []
+      streams: []
     };
     this.db = null;
     this.interval = null;
@@ -37,24 +36,10 @@ class StreamList extends React.Component {
           created_at: {
             $gte: queryAtTime
           }
-
-          // Keeping this around in case I can make it more performant
-          // ,_id: {
-          //   $nin: this.state.seen
-          // }
         },
         limit: count
       };
       this.db.find(query).then(response => {
-        // See above
-        // let seen = this.state.seen.slice();
-        // seen.push(
-        //   ...response.docs.reduce((ids, doc) => {
-        //     ids.push(doc._id);
-        //     return ids;
-        //   }, [])
-        // );
-
         // If nothing comes back, try again.
         if (response.docs.length === 0) {
           console.log('received no streams');
@@ -68,7 +53,6 @@ class StreamList extends React.Component {
           fetching: false,
           fetchSecs: 0,
           streams: response.docs
-          // seen
         });
 
         // Clear the fetch counter.
@@ -127,7 +111,7 @@ class StreamList extends React.Component {
       if (this.state.fetchSecs > 3) {
         buttonMessage = 'the void is cranky...';
       }
-      if(this.state.fetchSecs > 10) {
+      if (this.state.fetchSecs > 10) {
         buttonMessage = 'wtf, void?';
       }
     }
