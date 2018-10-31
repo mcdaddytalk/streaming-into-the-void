@@ -75,7 +75,7 @@ class StreamList extends React.Component {
     });
   };
 
-  nextOnClick = () => {
+  fetchMoreStreams = () => {
     // set fetching state
     this.setState({
       fetching: true
@@ -95,7 +95,7 @@ class StreamList extends React.Component {
       console.log('connected to db');
 
       // Grab streams
-      this.getStreams();
+      this.fetchMoreStreams();
     } catch (e) {
       console.log(e);
     }
@@ -111,8 +111,8 @@ class StreamList extends React.Component {
       if (this.state.fetchSecs > 3) {
         buttonMessage = 'the void is cranky...';
       }
-      if (this.state.fetchSecs > 10) {
-        buttonMessage = 'wtf, void?';
+      if (this.state.fetchSecs > 6) {
+        buttonMessage = "it's a really deep void";
       }
     }
 
@@ -122,8 +122,11 @@ class StreamList extends React.Component {
           <Stream key={stream.id + '-' + index} data={stream} />
         ))}
         <button
-          className={classNames('next', { loading: this.state.fetching })}
-          onClick={this.nextOnClick}
+          className={classNames('next', {
+            loading: this.state.fetching,
+            only: this.state.streams.length === 0
+          })}
+          onClick={this.fetchMoreStreams}
         >
           {buttonMessage}
         </button>

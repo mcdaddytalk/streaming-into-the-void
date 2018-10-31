@@ -1,11 +1,15 @@
-html, body {
+html,
+body {
   font-family: 'Courier New', Courier, monospace;
-  background: rgb(0,0,0);
+  background: rgb(0, 0, 0);
   color: white;
   font-weight: 500;
 }
 
-html, body, #root, .App {
+html,
+body,
+#root,
+.App {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -47,11 +51,19 @@ a {
   text-shadow: 1px 1px 0 #000;
 }
 
-.next, iframe {
-  min-width: auto;
+.next,
+iframe {
+  min-width: 0;
+  display: block;
+  flex: 0 0 32%;
+  /* min-width: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: 0;
+  flex-basis: 0; */
+}
+
+.next.only {
+  flex: 0 0 100%;
 }
 
 h1 {
@@ -70,4 +82,13 @@ h4 {
   margin: 0 auto;
   padding: 1rem;
   font-size: 14px;
+}
+
+@media only screen and (min-device-width: 414px) and (max-device-height: 736px) and (-webkit-device-pixel-ratio: 3),
+  only screen and (max-device-width: 800px) and (-webkit-device-pixel-ratio: 2),
+  only screen and (max-device-width: 800px) and (-webkit-device-pixel-ratio: 3),
+  only screen and (max-width: 600px) {
+    .next, iframe {
+      flex: 0 0 100%;
+    }
 }
