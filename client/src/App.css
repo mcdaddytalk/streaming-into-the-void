@@ -5,60 +5,69 @@ html, body {
   font-weight: 500;
 }
 
-a {
-  color: white;
-}
-
-h1 {
-  margin: 0;
-  padding-top: 2rem;
-}
-
-h4 {
-  margin: 1rem 4rem;
-}
-
-.App {
-  text-align: center;
-
-}
-
-.StreamList {
-  display: flex;
-  flex-flow: row wrap;
-}
-
-iframe {
-  flex-grow: 1;
-}
-
 html, body, #root, .App {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
+a {
+  color: white;
+}
+
+.App {
+  text-align: center;
+}
+
 .StreamList {
+  display: flex;
+  flex-flow: row wrap;
   height: 75%;
+  clear: both;
 }
 
 .next {
   font-family: inherit;
   background: none;
   color: inherit;
-  border: none;
-  word-break: break-all;
   font-size: 16px;
-  width: 1em;
-  padding: 5em;
+  /* word-break: break-all; */
+  /* width: 1em; */
+  /* padding: 5em; */
   text-align: center;
+  margin: 0;
+  padding: 2rem 0;
   cursor: pointer;
+  box-sizing: border-box;
+  border: 2px solid purple;
+}
+
+.next.loading {
+  background: url('~/loading.gif') center center no-repeat;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.next, iframe {
+  min-width: auto;
   flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+}
+
+h1 {
+  margin: 0;
+  padding-top: 2rem;
+  font-size: 22px;
+}
+
+h4 {
+  padding: 1rem 4rem;
+  font-size: 16px;
+  float: left;
 }
 
 .credit {
-  position: fixed;
-  bottom: 0;
-  right: 0;
+  margin: 0 auto;
   padding: 1rem;
+  font-size: 14px;
 }
