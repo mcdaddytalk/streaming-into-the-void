@@ -3,6 +3,7 @@
 tmp
 config.json
 now.json
+nodemon.json
 
 # dependencies
 node_modules

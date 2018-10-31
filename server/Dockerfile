@@ -1,8 +1,9 @@
 FROM node:10.12-alpine
 
-# Create files for pouch db
+# Set up PouchDB in /tmp/
 RUN mkdir -p /tmp/pouch
 RUN touch /tmp/log.txt
+COPY pouchdb-config.json /tmp/
 
 WORKDIR /usr/src
 
