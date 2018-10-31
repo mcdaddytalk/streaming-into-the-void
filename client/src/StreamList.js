@@ -36,24 +36,21 @@ class StreamList extends React.Component {
         selector: {
           created_at: {
             $gte: queryAtTime
+          },
+          _id: {
+            $nin: this.state.seen
           }
-
-          // Keeping this around in case I can make it more performant
-          // ,_id: {
-          //   $nin: this.state.seen
-          // }
         },
         limit: count
       };
       this.db.find(query).then(response => {
-        // See above
-        // let seen = this.state.seen.slice();
-        // seen.push(
-        //   ...response.docs.reduce((ids, doc) => {
-        //     ids.push(doc._id);
-        //     return ids;
-        //   }, [])
-        // );
+        let seen = this.state.seen.slice();
+        seen.push(
+          ...response.docs.reduce((ids, doc) => {
+            ids.push(doc._id);
+            return ids;
+          }, [])
+        );
 
         // If nothing comes back, try again.
         if (response.docs.length === 0) {
@@ -67,8 +64,8 @@ class StreamList extends React.Component {
         this.setState({
           fetching: false,
           fetchSecs: 0,
-          streams: response.docs
-          // seen
+          streams: response.docs,
+          seen
         });
 
         // Clear the fetch counter.
