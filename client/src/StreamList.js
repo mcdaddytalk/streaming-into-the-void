@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 PouchDB.plugin(PouchDBFind);
 
-let env = 'production'; // process.env.REACT_APP_STAGE;
+let env = process.env.REACT_APP_STAGE;
 const dbURL =
   env === 'dev'
     ? 'http://localhost:5000/voids'
@@ -112,7 +112,7 @@ class StreamList extends React.Component {
         buttonMessage = 'the void is cranky...';
       }
       if (this.state.fetchSecs > 6) {
-        buttonMessage = "it's a really deep void";
+        buttonMessage = "sorry, the void is too deep right now. please return to the void later.";
       }
     }
 

@@ -1,26 +1,39 @@
-const request = require('request-promise-native');
+import request from 'request-promise-native';
+import db from '../db';
+import refreshAccessToken from './refreshAccessToken';
 
-const { Voids } = require('./db');
+const addVoid = async (client, stream) => {
+  const queryText =
+    'INSERT INTO voids ( \
+    stream_id, \
+    type, \
+    last_live_at, \
+    user_id, \
+    title, \
+    language, \
+    thumbnail_url, \
+    viewers \
+  ) VALUES ($1, $2, current_timestamp, $3, $4, $5, $6, $7) \
+  ON CONFLICT (stream_id) DO UPDATE SET last_live_at = current_timestamp \
+  RETURNING *';
 
-const addVoid = async stream => {
-  const _id = stream.id; // a particular stream: a user ID and a created at
+  const queryParams = [
+    stream.id,
+    'stream',
+    stream.user_id,
+    stream.title,
+    stream.language,
+    stream.thumbnail_url,
+    stream.viewer_count
+  ];
 
-  const newDoc = {
-    _id,
-    type: 'stream',
-    // 'random': Math.random(),
-    created_at: Date.now(),
-    user_id: stream.user_id,
-    title: stream.title,
-    started_at: stream.started_at,
-    language: stream.language,
-    thumbnail_url: stream.thumbnail_url,
-    viewers: stream.viewer_count
-  };
-
-  Voids.upsert(_id, oldDoc => {
-    return newDoc;
-  }).catch(e => console.log(e));
+  try {
+    await client.query(queryText, queryParams);
+    return true;
+  } catch (e) {
+    console.log('Error saving stream to db', e);
+    return false;
+  }
 };
 
 // make one call and receive up to 100 streams from Twitch API
@@ -49,20 +62,25 @@ const fetchStreams = async (cursor, token) => {
 };
 
 const filterStreams = async streams => {
+  const client = await db.pool.connect();
   let count = 0;
-  for (const stream of streams) {
-    // filter out streams
-    if (stream && stream.viewer_count < 2 && stream.type === 'live') {
-      // add stream to db
-      addVoid(stream);
-      count++;
-    }
-  }
+
+  await Promise.all(
+    streams.map(async stream => {
+      if (stream && stream.viewer_count < 2 && stream.type === 'live') {
+        // add stream to db
+        await addVoid(client, stream);
+        count++;
+      }
+    })
+  );
+
+  client.release();
   return count;
 };
 
 // grab many streams in a batch of up to 120 calls.
-const fetchBatch = async (token, cursor) => {
+export default async (token, cursor) => {
   let batchSize = 120;
 
   let stats = {
@@ -72,19 +90,21 @@ const fetchBatch = async (token, cursor) => {
   };
 
   try {
-    console.log('!!!! Starting a batch at', cursor);
-
     for (let i = 0; i < batchSize; i++) {
       // grab streams.
       let streams = await fetchStreams(cursor, token);
 
       // check for error object
       if (streams.error) {
-        console.error(
-          `==> Bad response received (${streams.error.status}): ${
-            streams.error.error
-          }`
-        );
+        if (streams.error.status === 401) {
+          await refreshAccessToken();
+        } else {
+          console.error(
+            `==> Bad response received (${streams.error.status}): ${
+              streams.error.error
+            }`
+          );
+        }
         break;
       }
 
@@ -103,19 +123,6 @@ const fetchBatch = async (token, cursor) => {
       `==> Finished batch.\n${stats.voids} voids\n${stats.calls} calls`
     );
 
-    // trigger a re-index
-    await Voids.find({
-      selector: {
-        created_at: {
-          $gte: stats.began
-        }
-      },
-      sort: ['created_at'],
-      limit: 1
-    });
-
     return { ...stats, cursor };
   }
 };
-
-module.exports = { fetchBatch };
