@@ -1,20 +1,8 @@
 import React from 'react';
 import Stream from './Stream';
-import PouchDB from 'pouchdb';
-import PouchDBFind from 'pouchdb-find';
 import classNames from 'classnames';
 
-PouchDB.plugin(PouchDBFind);
-
-let env = process.env.REACT_APP_STAGE;
-const dbURL =
-  env === 'dev'
-    ? 'http://localhost:5000/voids'
-    : 'https://api.void.kitay.co/voids';
-
-const randInterval = (min, max) => {
-  return Math.random() * (max - min + 1) + min;
-};
+const streamApi = 'https://sitv-api.herokuapp.com/';
 
 class StreamList extends React.Component {
   constructor(props) {
@@ -22,45 +10,56 @@ class StreamList extends React.Component {
     this.state = {
       fetching: true,
       fetchSecs: 0,
-      streams: []
+      streams: [],
+      seen_stream_ids: []
     };
     this.db = null;
     this.interval = null;
   }
 
-  getStreams = (count = 8) => {
+  getStreams = async (count = 8) => {
     try {
-      let queryAtTime = Date.now() - Math.floor(randInterval(0, 2) * 60 * 1000);
-      let query = {
-        selector: {
-          created_at: {
-            $gte: queryAtTime
-          }
-        },
-        limit: count
+      // fetch streams
+      const data = {
+        seen_stream_ids: this.state.seen_stream_ids,
+        count
       };
-      this.db.find(query).then(response => {
-        // If nothing comes back, try again.
-        if (response.docs.length === 0) {
-          console.log('received no streams');
-          return this.getStreams();
-        }
 
-        console.log('got streams', response.docs);
+      console.log('Sending data', data);
 
-        // Otherwise, update state with the new streams.
-        this.setState({
-          fetching: false,
-          fetchSecs: 0,
-          streams: response.docs
-        });
-
-        // Clear the fetch counter.
-        clearInterval(this.interval);
+      const response = await fetch(streamApi, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
       });
 
-      // For debugging: explains the query being made
-      // this.db.explain(query).then(console.log);
+      const streams = await response.json();
+
+      if (streams.length === 0) {
+        console.log('received no streams');
+        return this.getStreams();
+      }
+
+      console.log('got streams', streams);
+
+      // Otherwise, update state with the new streams.
+      this.setState(state => ({
+        fetching: false,
+        fetchSecs: 0,
+        streams,
+        seen_stream_ids: [
+          ...state.seen_stream_ids,
+          ...streams.reduce((arr, stream) => {
+            arr.push(stream.stream_id);
+            return arr;
+          }, [])
+        ]
+      }));
+
+      // // Clear the fetch counter.
+      clearInterval(this.interval);
     } catch (e) {
       console.log('Failed to get streams', e);
 
@@ -89,30 +88,19 @@ class StreamList extends React.Component {
   };
 
   componentDidMount() {
-    try {
-      // Connect to PouchDB
-      this.db = new PouchDB(dbURL);
-      console.log('connected to db');
-
-      // Grab streams
-      this.fetchMoreStreams();
-    } catch (e) {
-      console.log(e);
-    }
+    this.fetchMoreStreams();
   }
 
   render() {
-    let buttonMessage = 'contacting the void';
-    if (this.db) {
-      buttonMessage = 'go deeper';
-    }
+    let buttonMessage = 'go deeper';
     if (this.state.fetching) {
-      buttonMessage = 'reaching into the void';
+      buttonMessage = 'contacting the void';
       if (this.state.fetchSecs > 3) {
         buttonMessage = 'the void is cranky...';
       }
       if (this.state.fetchSecs > 6) {
-        buttonMessage = "sorry, the void is too deep right now. please return to the void later.";
+        buttonMessage =
+          'sorry, the void is too deep right now. please return to the void later.';
       }
     }
 
