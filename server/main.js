@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import router from './api';
+import cors from 'cors';
 import fetchStreams from './streams/fetchStreams';
 import pruneStreams from './streams/pruneStreams';
 import Config from './config.json';
@@ -32,6 +33,7 @@ const runBatch = async (token, batchNum, cursor) => {
 runBatch(Config.token.access_token, 0, null);
 
 // server live
+app.use(cors());
 app.use(bodyParser.json());
 app.use(router);
 
