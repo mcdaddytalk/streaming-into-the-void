@@ -1,18 +1,19 @@
-FROM node:10.12-alpine
+# Use Node.js version 10
+FROM mhart/alpine-node:10
 
+# Set the working directory
 WORKDIR /usr/src
 
-COPY package.json .
-COPY package-lock.json .
+# Copy package manager files to the working directory and run install
+COPY package.json package-lock.json ./
+RUN npm install
 
-RUN apk --no-cache --virtual build-dependencies add \
-    python \
-    make \
-    g++ \
-    && npm install \
-    && apk del build-dependencies
-
+# Copy all files to the working directory
 COPY . .
 
+# Run tests
+# RUN CI=true npm run test
+
+# Build the app and move the resulting build to the `/public` directory
 RUN npm run build
 RUN mv ./build /public
