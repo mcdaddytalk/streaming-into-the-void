@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
             AND stream_id NOT IN ($1) \
       ORDER BY random() \
       LIMIT $2",
-      [seen_stream_ids, !count || count < 5 || count > 20 ? 8 : count]
+      [seen_stream_ids, !count || count < 5 || count > 1000 ? 8 : count]
     );
     return res.json(streams.rows);
   } catch (e) {
