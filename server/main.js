@@ -21,6 +21,9 @@ const runBatch = async (token, batchNum, cursor) => {
     // grab streams
     const result = await fetchStreams(token, cursor);
     cursor = result.cursor;
+    if (result.token) {
+      token = result.token;
+    }
   } catch (e) {
     console.log('========\nERROR FETCHING STREAMS\n==========\n', e);
   }

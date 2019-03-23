@@ -97,7 +97,7 @@ export default async (token, cursor) => {
       // check for error object
       if (streams.error) {
         if (streams.error.status === 401) {
-          await refreshAccessToken();
+          token = await refreshAccessToken();
         } else {
           console.error(
             `==> Bad response received (${streams.error.status}): ${
@@ -123,6 +123,6 @@ export default async (token, cursor) => {
       `==> Finished batch.\n${stats.voids} voids\n${stats.calls} calls`
     );
 
-    return { ...stats, cursor };
+    return { cursor, token };
   }
 };
