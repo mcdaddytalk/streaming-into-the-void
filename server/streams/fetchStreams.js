@@ -56,7 +56,7 @@ const fetchStreams = async (cursor, token) => {
     const response = await request(options);
     return response;
   } catch (e) {
-    console.error('==> Could not fetch streams at cursor', cursor, e.message);
+    console.error('==> Could not fetch streams at cursor:\n', cursor, '\nwith token:\n', token, '\nerror:\n', e.message);
     return e;
   }
 };
