@@ -18,7 +18,7 @@ module.exports = refreshAccessToken = async () => {
       if (err) console.log('Could not save new token', err);
       console.log('Refreshed access token\n', response);
     });
-    return token;
+    return token.access_token;
   } catch (e) {
     console.log("Couldn't update access token", e.error);
     return false;

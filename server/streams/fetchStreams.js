@@ -97,6 +97,7 @@ export default async (token, cursor) => {
       // check for error object
       if (streams.error) {
         if (streams.error.status === 401) {
+          // updates the local config files and returns the access_token
           token = await refreshAccessToken();
         } else {
           console.error(
