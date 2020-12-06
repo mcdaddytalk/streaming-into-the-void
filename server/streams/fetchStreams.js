@@ -1,6 +1,7 @@
 import request from 'request-promise-native';
 import db from '../db';
 import refreshAccessToken from './refreshAccessToken';
+import Config from '../config.json';
 
 const addVoid = async (client, stream) => {
   const queryText =
@@ -24,7 +25,7 @@ const addVoid = async (client, stream) => {
     stream.title,
     stream.language,
     stream.thumbnail_url,
-    stream.viewer_count
+    stream.viewer_count,
   ];
 
   try {
@@ -47,26 +48,34 @@ const fetchStreams = async (cursor, token) => {
       (cursor ? cursor : '') +
       '&game_id=417752&game_id=509671&game_id=509672&game_id=26936&game_id=509659&game_id=509673&game_id=509658&game_id=509670&game_id=509669&game_id=509667&game_id=509663',
     headers: {
-      Authorization: 'Bearer ' + token
+      'client-id': Config.twitch_secrets.client_id,
+      Authorization: 'Bearer ' + token,
     },
-    json: true
+    json: true,
   };
   // fetch and return data
   try {
     const response = await request(options);
     return response;
   } catch (e) {
-    console.error('==> Could not fetch streams at cursor:\n', cursor, '\nwith token:\n', token, '\nerror:\n', e.message);
+    console.error(
+      '==> Could not fetch streams at cursor:\n',
+      cursor,
+      '\nwith token:\n',
+      token,
+      '\nerror:\n',
+      e.message
+    );
     return e;
   }
 };
 
-const filterStreams = async streams => {
+const filterStreams = async (streams) => {
   const client = await db.pool.connect();
   let count = 0;
 
   await Promise.all(
-    streams.map(async stream => {
+    streams.map(async (stream) => {
       if (stream && stream.viewer_count < 2 && stream.type === 'live') {
         // add stream to db
         await addVoid(client, stream);
@@ -86,7 +95,7 @@ export default async (token, cursor) => {
   let stats = {
     began: Date.now(),
     calls: 0,
-    voids: 0
+    voids: 0,
   };
 
   try {
@@ -101,9 +110,7 @@ export default async (token, cursor) => {
           token = await refreshAccessToken();
         } else {
           console.error(
-            `==> Bad response received (${streams.error.status}): ${
-              streams.error.error
-            }`
+            `==> Bad response received (${streams.error.status}): ${streams.error.error}`
           );
         }
         break;

@@ -2,7 +2,7 @@
   "name": "sitv-server",
   "version": "1.0.0",
   "scripts": {
-    "dev": "DATABASE_URL=postgresql://localhost/voids NODE_ENV=dev nodemon index.js",
+    "dev": "DATABASE_URL=postgresql://localhost/voids NODE_ENV=dev node index.js",
     "start": "node index.js"
   },
   "engines": {
@@ -13,7 +13,7 @@
     "cors": "^2.8.5",
     "esm": "^3.2.0",
     "express": "^4.16.2",
-    "express-pouchdb": "^4.1.0",
+    "express-pouchdb": "^4.2.0",
     "express-promise-router": "^3.0.3",
     "node-cron": "^2.0.3",
     "nodemon": "^1.18.9",

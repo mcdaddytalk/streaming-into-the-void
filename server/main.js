@@ -32,8 +32,8 @@ const runBatch = async (token, batchNum, cursor) => {
   setTimeout(() => runBatch(token, batchNum + 1, cursor), 1000 * 60);
 };
 
-// Begin running batches at num 0 with no cursor.
-runBatch(Config.token.access_token, 0, null);
+// Begin running batches
+runBatch(Config.token.access_token, 1, null);
 
 // server live
 app.use(cors());
