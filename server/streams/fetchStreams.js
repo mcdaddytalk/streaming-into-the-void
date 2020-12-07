@@ -3,6 +3,23 @@ import db from '../db';
 import refreshAccessToken from './refreshAccessToken';
 import Config from '../config.json';
 
+const GAME_IDS = [
+  509658,
+  // 26936, music category. too many boring streams
+  509660,
+  417752,
+  509659,
+  509670,
+  518203,
+  509673,
+  509667,
+  509672,
+  509663,
+  509669,
+  515214,
+  509671,
+];
+
 const addVoid = async (client, stream) => {
   const queryText =
     'INSERT INTO voids ( \
@@ -46,7 +63,8 @@ const fetchStreams = async (cursor, token) => {
     uri:
       'https://api.twitch.tv/helix/streams?first=100&language=en&after=' +
       (cursor ? cursor : '') +
-      '&game_id=417752&game_id=509671&game_id=509672&game_id=26936&game_id=509659&game_id=509673&game_id=509658&game_id=509670&game_id=509669&game_id=509667&game_id=509663',
+      '&game_id=' +
+      GAME_IDS.join('&game_id='),
     headers: {
       'client-id': Config.twitch_secrets.client_id,
       Authorization: 'Bearer ' + token,

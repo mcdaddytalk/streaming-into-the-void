@@ -47,23 +47,47 @@ a {
 }
 
 .next.loading {
-  background: url('~/loading.gif') center center no-repeat;
+  background: url('./loading.gif') center center no-repeat;
   text-shadow: 1px 1px 0 #000;
 }
 
 .next,
-iframe {
+.twitchplayer {
   min-width: 0;
   display: block;
   flex: 0 0 32%;
+  position: relative;
+  opacity: 0.75;
   /* min-width: auto;
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 0; */
 }
 
+.twitchplayer:hover,
+.twitchplayer.playing {
+  opacity: 1;
+}
+
+.twitchplayer.playing {
+  box-shadow: 0 0 2px 0 purple;
+}
+
 .next.only {
   flex: 0 0 100%;
+}
+
+.volume {
+  position: absolute;
+  background: none;
+  width: 100%;
+  height: 100%;
+  cursor: cell;
+  z-index: 999;
+}
+
+.twitchplayer.playing .volume {
+  cursor: not-allowed;
 }
 
 h1 {
@@ -88,7 +112,8 @@ h4 {
   only screen and (max-device-width: 800px) and (-webkit-device-pixel-ratio: 2),
   only screen and (max-device-width: 800px) and (-webkit-device-pixel-ratio: 3),
   only screen and (max-width: 600px) {
-    .next, iframe {
-      flex: 0 0 100%;
-    }
+  .next,
+  .twitchplayer {
+    flex: 0 0 100%;
+  }
 }

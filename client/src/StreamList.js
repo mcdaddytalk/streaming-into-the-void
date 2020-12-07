@@ -2,7 +2,8 @@ import React from 'react';
 import Stream from './Stream';
 import classNames from 'classnames';
 
-const streamApi = 'https://sitv-api.herokuapp.com/';
+const streamApi = 'http://localhost:5000';
+// const streamApi = 'https://sitv-api.herokuapp.com/';
 
 class StreamList extends React.Component {
   constructor(props) {
@@ -11,7 +12,7 @@ class StreamList extends React.Component {
       fetching: true,
       fetchSecs: 0,
       streams: [],
-      seen_stream_ids: []
+      seen_stream_ids: [],
     };
     this.db = null;
     this.interval = null;
@@ -22,7 +23,7 @@ class StreamList extends React.Component {
       // fetch streams
       const data = {
         seen_stream_ids: this.state.seen_stream_ids,
-        count
+        count,
       };
 
       console.log('Sending data', data);
@@ -30,9 +31,9 @@ class StreamList extends React.Component {
       const response = await fetch(streamApi, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       const streams = await response.json();
@@ -45,7 +46,7 @@ class StreamList extends React.Component {
       console.log('got streams', streams);
 
       // Otherwise, update state with the new streams.
-      this.setState(state => ({
+      this.setState((state) => ({
         fetching: false,
         fetchSecs: 0,
         streams,
@@ -54,8 +55,8 @@ class StreamList extends React.Component {
           ...streams.reduce((arr, stream) => {
             arr.push(stream.stream_id);
             return arr;
-          }, [])
-        ]
+          }, []),
+        ],
       }));
 
       // // Clear the fetch counter.
@@ -70,14 +71,14 @@ class StreamList extends React.Component {
 
   tickTock = () => {
     this.setState({
-      fetchSecs: this.state.fetchSecs + 1
+      fetchSecs: this.state.fetchSecs + 1,
     });
   };
 
   fetchMoreStreams = () => {
     // set fetching state
     this.setState({
-      fetching: true
+      fetching: true,
     });
 
     // start an interval for our cute message
@@ -112,7 +113,7 @@ class StreamList extends React.Component {
         <button
           className={classNames('next', {
             loading: this.state.fetching,
-            only: this.state.streams.length === 0
+            only: this.state.streams.length === 0,
           })}
           onClick={this.fetchMoreStreams}
         >
